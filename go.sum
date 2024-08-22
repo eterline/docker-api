@@ -1,0 +1,4 @@
+github.com/eterline/utills v0.0.0-20240822093918-228844922dfe h1:6/sQSxVpPbVJrD2CZb/56+oflcexgyUXqnMSJ2ScID0=
+github.com/eterline/utills v0.0.0-20240822093918-228844922dfe/go.mod h1:Ka8niIjDQtEzQjAnzPqvpN0oKwf4eg6u0dEAlPh7dHI=
+github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
+github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
