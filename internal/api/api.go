@@ -2,8 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/eterline/docker-api/internal/cli"
@@ -30,28 +28,30 @@ type Container struct {
 
 type PsList []Container
 
-func StartServe(port uint, ip string) {
-	router := mux.NewRouter()
-
-	router.HandleFunc("/api/containers", getPosts).Methods("GET")
-	router.HandleFunc("/api/containers/{id}", idContainer).Methods("GET")
-
-	log.Print("API server has been started.")
-	err := http.ListenAndServe(fmt.Sprintf("%s:%v", ip, port), router)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+type API struct {
+	router *mux.Router
 }
 
-func getPosts(w http.ResponseWriter, r *http.Request) {
+func (api *API) Endpoints() {
+	api.router.HandleFunc("/api/v1/containers", api.containers).Methods(http.MethodGet)
+	api.router.HandleFunc("/api/v1/containers/{id}", api.idContainer).Methods(http.MethodGet)
+}
+
+func (api *API) containers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	list := cli.JsonPs()
+	list, err := cli.JsonPs()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	json.NewEncoder(w).Encode(list)
 }
 
-func idContainer(w http.ResponseWriter, r *http.Request) {
+func (api *API) idContainer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
-	ct := cli.JsonCtId(vars[`id`])
+	ct, err := cli.JsonCtId(vars[`id`])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	json.NewEncoder(w).Encode(ct)
 }

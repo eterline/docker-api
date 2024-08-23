@@ -2,7 +2,6 @@ package cli
 
 import (
 	"encoding/json"
-	"log"
 
 	utilla "github.com/eterline/utills"
 )
@@ -33,33 +32,26 @@ func DockerPs() []byte {
 	return utilla.ExecCmd(DOCKER_PS)
 }
 
-func JsonPs() PsList {
+func JsonPs() (PsList, error) {
 	var list PsList
 	err := json.Unmarshal([]byte(DockerPs()), &list)
 	if err != nil {
-		log.Fatal(err.Error())
+		return list, nil
 	}
-	return list
+	return list, nil
 }
 
-func JsonCtId(id string) Container {
+func JsonCtId(id string) (Container, error) {
 	var res Container
-	for _, i := range JsonPs() {
+	list, err := JsonPs()
+	if err != nil {
+		return res, err
+	}
+	for _, i := range list {
 		if i.ID == id {
 			res := i
-			return res
+			return res, err
 		}
 	}
-	return res
-}
-
-func JsonCtNames(names string) Container {
-	var res Container
-	for _, i := range JsonPs() {
-		if i.Names == names {
-			res := i
-			return res
-		}
-	}
-	return res
+	return res, nil
 }

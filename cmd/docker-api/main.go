@@ -15,7 +15,7 @@ type Settings struct {
 func main() {
 	var sets Settings
 	sets.mustArgs()
-	api.StartServe(sets.Port, sets.Ip)
+	api.StartServer(sets.Port, sets.Ip)
 }
 
 func (s *Settings) mustArgs() {
@@ -25,4 +25,5 @@ func (s *Settings) mustArgs() {
 	if s.Port > 65535 {
 		log.Fatal("Incorrect port.")
 	}
+	log.Printf("Server args set.")
 }
