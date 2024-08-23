@@ -35,9 +35,10 @@ func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.RemoteAddr, r.RequestURI)
 		if !verifyPass(r.Header.Get("Password")) {
-			http.Error(w, "Invalid password", http.StatusInternalServerError)
-		} else {
-			next.ServeHTTP(w, r)
+			http.Error(w, "Invalid password", http.StatusForbidden)
+			return
 		}
+		next.ServeHTTP(w, r)
+
 	})
 }
